@@ -39,8 +39,4 @@ public class TestCase {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
-	
-	
-
 }
