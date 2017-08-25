@@ -18,35 +18,28 @@ import org.jsoup.select.Elements;
  *
  */
 public class FitnessUtil {
-	
-	
-	
+
 	/**
-	 * Get plain text from url 
+	 * Get plain text from url
+	 * 
 	 * @param url
 	 * @return Plain text html
 	 */
 	public static void readHtmlFromTestHistory(String path) {
 		try {
 			Document doc = Jsoup.connect(path).get();
-			Elements table = doc.select("table");
-			ArrayList<String> downServer = new ArrayList<String>();
-			Elements rows = table.select("tr");
-			for (int i = 1; i < rows.size(); i++) {
-				Element row = rows.get(i);
-				Elements cols = row.select("td");
-				downServer.add(cols.get(i).text());
-			}
-			for (String string : downServer) {
-				System.out.println(string);
+			Elements tables = doc.select("table");
+			for (int i = 0; i < tables.size(); i++) {
+				final Element table = tables.get(i);
+				Elements th0 = table.select("tbody tr th");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void main(String[] args) {
-		String url = "http://localhost:8080/FrontPage.SuitProject001.SuiteIntegrationTesting?testHistory";
+		String url = "http://localhost:8081/FrontPage.SuitProject001.SuiteIntegrationTesting?pageHistory";
 		readHtmlFromTestHistory(url);
 	}
 
