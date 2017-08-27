@@ -11,7 +11,7 @@ public class TestSuite {
 
 	List<TestCase> testCases;
 
-	private Date date;
+	private String date;
 
 	public int getId() {
 		return id;
@@ -37,12 +37,32 @@ public class TestSuite {
 		this.testCases = testCases;
 	}
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Id: ");
+		sb.append(this.id);
+		sb.append(" Name TestSuite: ");
+		sb.append(this.name);
+		sb.append(" Run Date: ");
+		sb.append(this.date);
+		sb.append(" {\n");
+		for (int i = 0; i < this.testCases.size(); i++) {
+			sb.append(testCases.get(i).toString());
+			sb.append("\n");
+		}
+		sb.append("}");
+		return sb.toString();
+	}
+	
+	
 
 }

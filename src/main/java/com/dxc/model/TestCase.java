@@ -7,6 +7,7 @@ public class TestCase {
 	private int id;
 	private String name;
 	private int status;
+	private String date;
 	public static final int Failed = 1, Passed = 2;
 
 	public int getId() {
@@ -32,4 +33,21 @@ public class TestCase {
 	public void setStatus(int status) {
 		this.status = status;
 	}
+	
+	
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	@Override
+	public String toString() {
+		return "TestCase [id=" + id + ", name=" + name + ", status=" + status + ", date=" + date + "]";
+	}
+	
+	
 }
