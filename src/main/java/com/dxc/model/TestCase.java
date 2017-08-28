@@ -8,7 +8,7 @@ public class TestCase {
 	private String name;
 	private int status;
 	private String date;
-	public static final int Failed = 1, Passed = 2;
+	public static final int Failed = 1, Passed = 2, Unknown = 0;
 
 	public int getId() {
 		return id;

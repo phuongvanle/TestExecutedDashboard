@@ -6,7 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +19,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.dxc.model.AreaGraphChartModel;
+import com.dxc.model.PieChartModel;
 import com.dxc.model.TestCase;
 import com.dxc.model.TestSuite;
 
@@ -25,6 +29,8 @@ import com.dxc.model.TestSuite;
  *
  */
 public class FitnessUtil {
+	
+	public static final long CONTANT_ONE_DAY = 24*60*60*1000;
 
 	/**
 	 * Read all TestSuited in a project
@@ -196,13 +202,13 @@ public class FitnessUtil {
 			String strStatus = (String) props.get(nameTestCase);
 			switch (strStatus) {
 			case "pass":
-				status = 2;
+				status = TestCase.Passed;
 				break;
 			case "fail":
-				status = 1;
+				status = TestCase.Failed;
 				break;
 			default:
-				status = 0;
+				status = TestCase.Unknown;
 				break;
 			}
 			TestCase testCase = new TestCase();
@@ -246,9 +252,118 @@ public class FitnessUtil {
 		
 	}
 	
+	/**
+	 * 
+	 * @param contextPath
+	 * @param projectName
+	 * @return list piechartmodel
+	 */
+	public static List<PieChartModel> createPieChartData(String contextPath, String projectName) {
+		List<List<TestSuite>> list = createAllTestSuiteRunWithDate(contextPath, projectName);
+		List<PieChartModel> listPieChart = new ArrayList<>();
+		int pass = 0;
+		int fail = 0;
+		int error = 0;
+		for (List<TestSuite> listFirst : list) {
+			for (TestSuite testSuite : listFirst) {
+				for (TestCase testCase : testSuite.getTestCases()) {
+					if (TestCase.Passed == testCase.getStatus()) {
+						pass ++;
+					}
+					if (TestCase.Failed == testCase.getStatus()) {
+						fail++;
+					}
+					if (TestCase.Unknown == testCase.getStatus()) {
+						error++;
+					}
+				}
+			}
+		}
+		PieChartModel data1 = new PieChartModel();
+		data1.setStatus("Passed");
+		data1.setQuantity(pass);
+		PieChartModel data2 = new PieChartModel();
+		data2.setStatus("Failed");
+		data2.setQuantity(fail);
+		PieChartModel data3 = new PieChartModel();
+		data3.setStatus("Error");
+		data3.setQuantity(error);
+		listPieChart.add(data1);
+		listPieChart.add(data2);
+		listPieChart.add(data3);
+		return listPieChart;
+	}
+	
+	
+	public static List<AreaGraphChartModel> createAreaGraphData(String contextPath, String projectName) {
+		List<List<TestSuite>> listAll = createAllTestSuiteRunWithDate(contextPath, projectName);
+		List<AreaGraphChartModel> listAreaChart = new ArrayList<>();
+		List<TestSuite> listTSuiteByDate = new ArrayList<>();
+		List<String> listDateUnique = new ArrayList<>();
+		for (List<TestSuite> listTestSuite : listAll) {
+			for (TestSuite testSuite : listTestSuite) {
+				if (!listDateUnique.contains(testSuite.getDate().substring(0, testSuite.getDate().length()-6))) {
+					listDateUnique.add(testSuite.getDate().substring(0, testSuite.getDate().length()-6));
+				}
+			}
+		}
+		
+		
+		for (int i = 0; i < listDateUnique.size(); i++) {
+			AreaGraphChartModel areaChartModelPassed = new AreaGraphChartModel();
+			AreaGraphChartModel areaChartModelFailed = new AreaGraphChartModel();
+			AreaGraphChartModel areaChartModelError = new AreaGraphChartModel();
+			int quanlityFailed = 0;
+			int quanlityPassed = 0;
+			int quanlityError = 0;
+			for (List<TestSuite> listTestSuite : listAll) {
+				for (TestSuite testSuite : listTestSuite) {
+					for (TestCase testCase : testSuite.getTestCases()) {
+						if (listDateUnique.get(i).equalsIgnoreCase(testCase.getDate().substring(0, testSuite.getDate().length()-6))) {
+							if (TestCase.Passed == testCase.getStatus()) {
+								areaChartModelPassed.setDate(buildTimeOrder(listDateUnique.get(i)));
+								areaChartModelPassed.setStatus("Passed");
+								quanlityPassed++;
+								areaChartModelPassed.setQuanlity(quanlityPassed);
+							}
+							if (TestCase.Failed == testCase.getStatus()) {
+								quanlityFailed++;
+								areaChartModelFailed.setDate(buildTimeOrder(listDateUnique.get(i)));
+								areaChartModelFailed.setStatus("Failed");
+								areaChartModelFailed.setQuanlity(quanlityFailed);
+							}
+							if (TestCase.Unknown == testCase.getStatus()) {
+								quanlityError++;
+								areaChartModelError.setDate(buildTimeOrder(listDateUnique.get(i)));
+								areaChartModelError.setStatus("Error");
+								areaChartModelError.setQuanlity(quanlityError);
+							}
+						}
+						
+					}
+					
+				}
+			}
+			listAreaChart.add(areaChartModelPassed);
+			listAreaChart.add(areaChartModelFailed);
+//			listAreaChart.add(areaChartModelError);
+		}
+		return listAreaChart;
+	}
+	
+	public static Date buildTimeOrder(String days){
+		Date date = null;
+		try {
+			date = new SimpleDateFormat("yyyyMMdd").parse(days);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return date;
+	}
+	
 	
 	public static void main(String[] args) {
-		String url = "http://localhost:8082/FrontPage.SuitProject001.SuiteIntegrationTesting?pageHistory";
+//		String url = "http://localhost:8082/FrontPage.SuitProject001.SuiteIntegrationTesting?pageHistory";
 //		readHtmlFrompPageHistory(url);
 //		getDateRunTestSuite("http://localhost:8083", "SuitProject001");
 //		getTestCaseStatusByDate("http://localhost:8083","SuitProject001", "SuiteIntegrationTesting","20170824215920","TestCaseAbc1");
@@ -265,14 +380,17 @@ public class FitnessUtil {
 		String projectName = "SuitProject001";
 		String testSuiteName = "SuiteIntegrationTesting";
 		List<TestCase> testCases = null;
-		TestSuite testSuite = null;
-		List<TestSuite> listTestSuite = createTestSuiteRunWithDate(contextPath, projectName, testSuiteName);
-		List<List<TestSuite>> list = createAllTestSuiteRunWithDate(contextPath, projectName);
-		for (List<TestSuite> list1 : list) {
-			for (TestSuite testSuite2 : list1) {
-				System.out.println(testSuite2);
-			}
-		}
+//		TestSuite testSuite = null;
+//		List<TestSuite> listTestSuite = createTestSuiteRunWithDate(contextPath, projectName, testSuiteName);
+//		List<List<TestSuite>> list = createAllTestSuiteRunWithDate(contextPath, projectName);
+//		createAreaGraphData(contextPath, projectName);
+//		for (List<TestSuite> list1 : list) {
+//			for (TestSuite testSuite2 : list1) {
+//				System.out.println(testSuite2);
+//			}
+//		}
+		
+		System.out.println(buildTimeOrder("20171010"));
 		
 		
 	}
