@@ -1,18 +1,43 @@
 package com.dxc.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class TestSuite {
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Cascade;
+
+
+@Entity
+@Table(name = "testsuite")
+public class TestSuiteDTO implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-
+	@Column(name = "TestSuiteName")
 	private String name;
-
-	List<TestCase> testCases;
-
+	@OneToMany(mappedBy = "testSuite")
+	@Cascade({CascadeType.ALL})
+	List<TestCaseDTO> testCases;
+	@Column(name = "RunDate")
 	private String date;
 
+	
 	public int getId() {
 		return id;
 	}
@@ -29,17 +54,20 @@ public class TestSuite {
 		this.name = name;
 	}
 
-	public List<TestCase> getTestCases() {
+	public List<TestCaseDTO> getTestCases() {
 		return testCases;
 	}
 
-	public void setTestCases(List<TestCase> testCases) {
+	public void setTestCases(List<TestCaseDTO> testCases) {
 		this.testCases = testCases;
 	}
+
+
 
 	public String getDate() {
 		return date;
 	}
+
 
 	public void setDate(String date) {
 		this.date = date;

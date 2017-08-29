@@ -21,8 +21,8 @@ import org.jsoup.select.Elements;
 
 import com.dxc.model.AreaGraphChartModel;
 import com.dxc.model.PieChartModel;
-import com.dxc.model.TestCase;
-import com.dxc.model.TestSuite;
+import com.dxc.model.TestCaseDTO;
+import com.dxc.model.TestSuiteDTO;
 
 /**
  * @author phuongit
@@ -135,7 +135,7 @@ public class FitnessUtil {
 			Element table = doc.select("table").last();
 			Elements tr = table.select("tr:contains("+testCaseName+")");
 			String text = tr.attr("class");
-			status = ("pass".equals(text)) ? TestCase.Passed : TestCase.Failed;
+			status = ("pass".equals(text)) ? TestCaseDTO.Passed : TestCaseDTO.Failed;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -152,8 +152,8 @@ public class FitnessUtil {
 	 * @param testcasename
 	 * @return one test case
 	 */
-	public static TestCase createTestCase(String contextPath, String projectName,String testSuiteName, String date, String testCaseName) {
-		TestCase testCase = new TestCase();
+	public static TestCaseDTO createTestCase(String contextPath, String projectName,String testSuiteName, String date, String testCaseName) {
+		TestCaseDTO testCase = new TestCaseDTO();
 //		testCase.set
 		int status = getTestCaseStatusByDate(contextPath, projectName, testSuiteName, date, testCaseName);
 //		testCase.setId("tc" + date);
@@ -174,8 +174,8 @@ public class FitnessUtil {
 	 * 
 	 */
 	
-	public static TestSuite createTestSuite(String contextPath, String projectName, String testSuiteName, String date, List<TestCase> testCases) {
-		TestSuite testSuite = new TestSuite();
+	public static TestSuiteDTO createTestSuite(String contextPath, String projectName, String testSuiteName, String date, List<TestCaseDTO> testCases) {
+		TestSuiteDTO testSuite = new TestSuiteDTO();
 //		testSuite.setId();
 		testSuite.setName(testSuiteName);
 		testSuite.setDate(date);
@@ -192,8 +192,8 @@ public class FitnessUtil {
 	 * @return list of testcase
 	 */
 	
-	public static List<TestCase> createListTestCase(String contextPath, String projectName, String date, String testSuite) {
-		List<TestCase> list = new ArrayList<TestCase>();
+	public static List<TestCaseDTO> createListTestCase(String contextPath, String projectName, String date, String testSuite) {
+		List<TestCaseDTO> list = new ArrayList<TestCaseDTO>();
 		Properties props = getTestCaseOfTestSuite(contextPath, projectName, testSuite, date);
 		Enumeration enumer = props.keys();
 		while (enumer.hasMoreElements()) {
@@ -202,16 +202,16 @@ public class FitnessUtil {
 			String strStatus = (String) props.get(nameTestCase);
 			switch (strStatus) {
 			case "pass":
-				status = TestCase.Passed;
+				status = TestCaseDTO.Passed;
 				break;
 			case "fail":
-				status = TestCase.Failed;
+				status = TestCaseDTO.Failed;
 				break;
 			default:
-				status = TestCase.Unknown;
+				status = TestCaseDTO.Unknown;
 				break;
 			}
-			TestCase testCase = new TestCase();
+			TestCaseDTO testCase = new TestCaseDTO();
 			testCase.setName(nameTestCase);
 			testCase.setStatus(status);
 			testCase.setDate(date);
@@ -227,11 +227,11 @@ public class FitnessUtil {
 	 * @param testSuiteName
 	 * @return The list result when run testSuiteName by date 
 	 */
-	public static List<TestSuite> createTestSuiteRunWithDate(String contextPath, String projectName, String testSuiteName) {
-		List<TestSuite> listTestSuite = new ArrayList<TestSuite>();
+	public static List<TestSuiteDTO> createTestSuiteRunWithDate(String contextPath, String projectName, String testSuiteName) {
+		List<TestSuiteDTO> listTestSuite = new ArrayList<TestSuiteDTO>();
 		List<String> dates = getDateRunTestSuite(contextPath,projectName, testSuiteName);
-		List<TestCase> testCases = null;
-		TestSuite testSuite = null;
+		List<TestCaseDTO> testCases = null;
+		TestSuiteDTO testSuite = null;
 		for (String date : dates) {
 			testCases = createListTestCase(contextPath, projectName, date, testSuiteName);
 			testSuite = createTestSuite(contextPath, projectName, testSuiteName, date, testCases);
@@ -240,11 +240,11 @@ public class FitnessUtil {
 		return listTestSuite;
 	}
 	
-	public static List<List<TestSuite>> createAllTestSuiteRunWithDate(String contextPath, String projectName) {
+	public static List<List<TestSuiteDTO>> createAllTestSuiteRunWithDate(String contextPath, String projectName) {
 		List<String> testSuites = getTestSuiteOfProject(contextPath, projectName);
-		List<List<TestSuite>> listTestSuiteAll = new ArrayList<>();
+		List<List<TestSuiteDTO>> listTestSuiteAll = new ArrayList<>();
 		for (String testSuiteName : testSuites) {
-			List<TestSuite> listTestSuite = createTestSuiteRunWithDate(contextPath, projectName, testSuiteName);
+			List<TestSuiteDTO> listTestSuite = createTestSuiteRunWithDate(contextPath, projectName, testSuiteName);
 			listTestSuiteAll.add(listTestSuite);
 		}
 		return listTestSuiteAll;
@@ -259,21 +259,21 @@ public class FitnessUtil {
 	 * @return list piechartmodel
 	 */
 	public static List<PieChartModel> createPieChartData(String contextPath, String projectName) {
-		List<List<TestSuite>> list = createAllTestSuiteRunWithDate(contextPath, projectName);
+		List<List<TestSuiteDTO>> list = createAllTestSuiteRunWithDate(contextPath, projectName);
 		List<PieChartModel> listPieChart = new ArrayList<>();
 		int pass = 0;
 		int fail = 0;
 		int error = 0;
-		for (List<TestSuite> listFirst : list) {
-			for (TestSuite testSuite : listFirst) {
-				for (TestCase testCase : testSuite.getTestCases()) {
-					if (TestCase.Passed == testCase.getStatus()) {
+		for (List<TestSuiteDTO> listFirst : list) {
+			for (TestSuiteDTO testSuite : listFirst) {
+				for (TestCaseDTO testCase : testSuite.getTestCases()) {
+					if (TestCaseDTO.Passed == testCase.getStatus()) {
 						pass ++;
 					}
-					if (TestCase.Failed == testCase.getStatus()) {
+					if (TestCaseDTO.Failed == testCase.getStatus()) {
 						fail++;
 					}
-					if (TestCase.Unknown == testCase.getStatus()) {
+					if (TestCaseDTO.Unknown == testCase.getStatus()) {
 						error++;
 					}
 				}
@@ -296,12 +296,12 @@ public class FitnessUtil {
 	
 	
 	public static List<AreaGraphChartModel> createAreaGraphData(String contextPath, String projectName) {
-		List<List<TestSuite>> listAll = createAllTestSuiteRunWithDate(contextPath, projectName);
+		List<List<TestSuiteDTO>> listAll = createAllTestSuiteRunWithDate(contextPath, projectName);
 		List<AreaGraphChartModel> listAreaChart = new ArrayList<>();
-		List<TestSuite> listTSuiteByDate = new ArrayList<>();
+		List<TestSuiteDTO> listTSuiteByDate = new ArrayList<>();
 		List<String> listDateUnique = new ArrayList<>();
-		for (List<TestSuite> listTestSuite : listAll) {
-			for (TestSuite testSuite : listTestSuite) {
+		for (List<TestSuiteDTO> listTestSuite : listAll) {
+			for (TestSuiteDTO testSuite : listTestSuite) {
 				if (!listDateUnique.contains(testSuite.getDate().substring(0, testSuite.getDate().length()-6))) {
 					listDateUnique.add(testSuite.getDate().substring(0, testSuite.getDate().length()-6));
 				}
@@ -316,23 +316,23 @@ public class FitnessUtil {
 			int quanlityFailed = 0;
 			int quanlityPassed = 0;
 			int quanlityError = 0;
-			for (List<TestSuite> listTestSuite : listAll) {
-				for (TestSuite testSuite : listTestSuite) {
-					for (TestCase testCase : testSuite.getTestCases()) {
+			for (List<TestSuiteDTO> listTestSuite : listAll) {
+				for (TestSuiteDTO testSuite : listTestSuite) {
+					for (TestCaseDTO testCase : testSuite.getTestCases()) {
 						if (listDateUnique.get(i).equalsIgnoreCase(testCase.getDate().substring(0, testSuite.getDate().length()-6))) {
-							if (TestCase.Passed == testCase.getStatus()) {
+							if (TestCaseDTO.Passed == testCase.getStatus()) {
 								areaChartModelPassed.setDate(buildTimeOrder(listDateUnique.get(i)));
 								areaChartModelPassed.setStatus("Passed");
 								quanlityPassed++;
 								areaChartModelPassed.setQuanlity(quanlityPassed);
 							}
-							if (TestCase.Failed == testCase.getStatus()) {
+							if (TestCaseDTO.Failed == testCase.getStatus()) {
 								quanlityFailed++;
 								areaChartModelFailed.setDate(buildTimeOrder(listDateUnique.get(i)));
 								areaChartModelFailed.setStatus("Failed");
 								areaChartModelFailed.setQuanlity(quanlityFailed);
 							}
-							if (TestCase.Unknown == testCase.getStatus()) {
+							if (TestCaseDTO.Unknown == testCase.getStatus()) {
 								quanlityError++;
 								areaChartModelError.setDate(buildTimeOrder(listDateUnique.get(i)));
 								areaChartModelError.setStatus("Error");
@@ -379,7 +379,7 @@ public class FitnessUtil {
 		String contextPath = "http://localhost:8083";
 		String projectName = "SuitProject001";
 		String testSuiteName = "SuiteIntegrationTesting";
-		List<TestCase> testCases = null;
+		List<TestCaseDTO> testCases = null;
 //		TestSuite testSuite = null;
 //		List<TestSuite> listTestSuite = createTestSuiteRunWithDate(contextPath, projectName, testSuiteName);
 //		List<List<TestSuite>> list = createAllTestSuiteRunWithDate(contextPath, projectName);

@@ -6,7 +6,7 @@ public class RunTestSuite {
 
 	private int id;
 
-	private TestSuite testSuite;
+	private TestSuiteDTO testSuite;
 
 	private Date date;
 
@@ -18,11 +18,11 @@ public class RunTestSuite {
 		this.id = id;
 	}
 
-	public TestSuite getTestSuite() {
+	public TestSuiteDTO getTestSuite() {
 		return testSuite;
 	}
 
-	public void setTestSuite(TestSuite testSuite) {
+	public void setTestSuite(TestSuiteDTO testSuite) {
 		this.testSuite = testSuite;
 	}
 
