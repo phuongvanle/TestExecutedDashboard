@@ -14,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "testcase")
 public class TestCaseDTO implements Serializable {
@@ -33,7 +35,8 @@ public class TestCaseDTO implements Serializable {
 	private String date;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name="TestSuite_id", nullable = false)
+	@JoinColumn(name = "TestSuite_ID", nullable=false)
+	@JsonIgnore
 	private TestSuiteDTO testSuite;
 	
 

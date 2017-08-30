@@ -4,18 +4,24 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
@@ -27,13 +33,20 @@ public class TestSuiteDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	@Column(name = "TestSuiteName")
 	private String name;
-	@OneToMany(mappedBy = "testSuite")
-	@Cascade({CascadeType.ALL})
+	
+	@OneToMany(mappedBy = "testSuite", fetch = FetchType.LAZY)
+	@JsonIgnore
 	List<TestCaseDTO> testCases;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "projectid", nullable = false)
+	@JsonIgnore
+	private ProjectDTO project;
+	
 	@Column(name = "RunDate")
 	private String date;
 
@@ -71,6 +84,15 @@ public class TestSuiteDTO implements Serializable {
 
 	public void setDate(String date) {
 		this.date = date;
+	}
+	
+	
+	public ProjectDTO getProject() {
+		return project;
+	}
+
+	public void setProject(ProjectDTO project) {
+		this.project = project;
 	}
 
 	@Override

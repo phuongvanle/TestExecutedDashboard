@@ -6,14 +6,12 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.dxc.model.TestCaseDTO;
-
+import com.dxc.model.ProjectDTO;
 @Repository
 @Transactional
-public class TestCaseDAOImpl implements TestCaseDAO {
+public class ProjectDAOImpl implements ProjectDAO {
 	
-	private SessionFactory sessionFactory;
+	SessionFactory sessionFactory;
 	
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
@@ -25,13 +23,13 @@ public class TestCaseDAOImpl implements TestCaseDAO {
 	}
 
 	@Override
-	public void saveOrUpdate(TestCaseDTO tc) {
-		getSessionFactory().getCurrentSession().saveOrUpdate(tc);
+	public void saveOrUpdate(ProjectDTO project) {
+		getSessionFactory().getCurrentSession().saveOrUpdate(project);
 	}
 
 	@Override
-	public List<TestCaseDTO> getAll() {
-		return getSessionFactory().getCurrentSession().createQuery("from TestCaseDTO").list();
+	public List<ProjectDTO> getAll() {
+		return getSessionFactory().getCurrentSession().createQuery("from ProjectDTO").list();
 	}
 
 }

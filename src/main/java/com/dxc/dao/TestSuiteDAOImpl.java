@@ -1,5 +1,6 @@
 package com.dxc.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -32,7 +33,6 @@ public class TestSuiteDAOImpl implements TestSuiteDAO {
 
 	@Override
 	public List<TestSuiteDTO> getAll() {
-		return getSessionFactory().getCurrentSession().createQuery("from testsuite").list();
+		return getSessionFactory().getCurrentSession().createQuery("from TestSuiteDTO").list();
 	}
-
 }
