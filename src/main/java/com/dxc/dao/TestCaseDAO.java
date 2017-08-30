@@ -18,5 +18,11 @@ public interface TestCaseDAO {
 	 */
 	public List<TestCaseDTO> getAll();
 	
+	/**
+	 * 
+	 */
+	
+	public List<TestCaseDTO> getDataFourWeek();
+	
 	
 }

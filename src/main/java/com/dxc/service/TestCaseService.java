@@ -18,5 +18,11 @@ public interface TestCaseService {
 	 * @return
 	 */
 	public List<TestCaseDTO> getAll();
+	
+	/**
+	 * 
+	 */
+	
+	public List<TestCaseDTO> getTestCaseFourWeek();
 
 }

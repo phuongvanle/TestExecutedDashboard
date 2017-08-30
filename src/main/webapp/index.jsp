@@ -22,7 +22,7 @@
     $.ajax({
         'async': false,
         'global': false,
-        'url': "http://20.203.139.12:8080/TestExecutedDashboard/pieChartData/SuitProject001", 
+        'url': "http://localhost:8080/TestExecutedDashboard/pieChartData/SuitProject001", 
         'dataType': "json",
         'success': function (data) {
             input = data;

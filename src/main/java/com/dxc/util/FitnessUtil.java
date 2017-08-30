@@ -21,6 +21,7 @@ import org.jsoup.select.Elements;
 
 import com.dxc.model.AreaGraphChartModel;
 import com.dxc.model.PieChartModel;
+import com.dxc.model.ProjectDTO;
 import com.dxc.model.TestCaseDTO;
 import com.dxc.model.TestSuiteDTO;
 
@@ -31,6 +32,25 @@ import com.dxc.model.TestSuiteDTO;
 public class FitnessUtil {
 	
 	public static final long CONTANT_ONE_DAY = 24*60*60*1000;
+	
+	
+	public static List<String> getProjectNames(String url) {
+		List<String> list = new ArrayList<>();
+		try {
+			Document doc = Jsoup.connect(url + "/" + "FrontPage").get();
+			Elements table = doc.select("table");
+			for (Element element : table) {
+				Elements td = element.select("td a");
+				String href = td.attr("href");
+				String result = href.substring(href.indexOf(".")+1, href.length());
+				list.add(result);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return list;
+		
+	}
 
 	/**
 	 * Read all TestSuited in a project
@@ -215,6 +235,7 @@ public class FitnessUtil {
 			testCase.setName(nameTestCase);
 			testCase.setStatus(status);
 			testCase.setDate(date);
+//			testCase.setTestSuite(createTestSuite(contextPath, projectName, testSuiteName, date, testCases));
 			list.add(testCase);
 		}
 		return list;
@@ -235,6 +256,9 @@ public class FitnessUtil {
 		for (String date : dates) {
 			testCases = createListTestCase(contextPath, projectName, date, testSuiteName);
 			testSuite = createTestSuite(contextPath, projectName, testSuiteName, date, testCases);
+			for (TestCaseDTO testCaseDTO : testCases) {
+				testCaseDTO.setTestSuite(testSuite);
+			}
 			listTestSuite.add(testSuite);
 		}
 		return listTestSuite;
@@ -248,9 +272,40 @@ public class FitnessUtil {
 			listTestSuiteAll.add(listTestSuite);
 		}
 		return listTestSuiteAll;
-		
-		
 	}
+	
+	
+	public static ProjectDTO createProject(String projectname) {
+		ProjectDTO pro = new ProjectDTO();
+		pro.setName(projectname);
+		pro.setTestSuites(new ArrayList<TestSuiteDTO>());
+		return pro;
+	}
+	
+	public static List<ProjectDTO> createProjects(String url) {
+		List<ProjectDTO> projects = new ArrayList<>();
+		List<String> names = getProjectNames(url);
+		for (String name : names) {
+			ProjectDTO project = createProject(name);
+			List<String> testSuiteOfName = getTestSuiteOfProject(url, name);
+			for (String nameTestSuite : testSuiteOfName) {
+				List<List<TestSuiteDTO>> listTestSuite = createAllTestSuiteRunWithDate(url, name);
+				for (List<TestSuiteDTO> list : listTestSuite) {
+					for (TestSuiteDTO testSuiteDTO : list) {
+						testSuiteDTO.setProject(project);
+						project.getTestSuites().add(testSuiteDTO);
+					}
+				}
+			}
+			projects.add(project);
+		}
+		return projects;
+	}
+	
+	
+	
+	
+	
 	
 	/**
 	 * 
@@ -390,7 +445,8 @@ public class FitnessUtil {
 //			}
 //		}
 		
-		System.out.println(buildTimeOrder("20171010"));
+		
+		getProjectNames(contextPath);
 		
 		
 	}

@@ -31,4 +31,9 @@ public class TestCaseServiceImpl implements TestCaseService {
 	public List<TestCaseDTO> getAll() {
 		return testCaseDao.getAll();
 	}
+
+	@Override
+	public List<TestCaseDTO> getTestCaseFourWeek() {
+		return testCaseDao.getDataFourWeek();
+	}
 }

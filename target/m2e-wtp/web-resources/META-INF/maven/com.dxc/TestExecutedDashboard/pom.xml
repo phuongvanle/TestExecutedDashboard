@@ -51,8 +51,16 @@
 			<artifactId>spring-orm</artifactId>
 			<version>${spring-version}</version>
 		</dependency>
-		
-		
+
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+
+
+
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -101,9 +109,6 @@
 			<artifactId>jsoup</artifactId>
 			<version>1.8.3</version>
 		</dependency>
-
-
-
 
 		<dependency>
 			<groupId>junit</groupId>

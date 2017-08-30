@@ -1,21 +1,17 @@
 package com.dxc.dao;
 
-import java.util.ArrayList;
 import java.util.List;
-
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.dxc.model.TestSuiteDTO;
-
+import com.dxc.model.ProjectDTO;
 @Repository
 @Transactional
-public class TestSuiteDAOImpl implements TestSuiteDAO {
+public class ProjectDAOImpl implements ProjectDAO {
 	
-	private SessionFactory sessionFactory;
+	SessionFactory sessionFactory;
 	
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
@@ -27,12 +23,13 @@ public class TestSuiteDAOImpl implements TestSuiteDAO {
 	}
 
 	@Override
-	public void saveOrUpdate(TestSuiteDTO testSuite) {
-		getSessionFactory().getCurrentSession().saveOrUpdate(testSuite);
+	public void saveOrUpdate(ProjectDTO project) {
+		getSessionFactory().getCurrentSession().saveOrUpdate(project);
 	}
 
 	@Override
-	public List<TestSuiteDTO> getAll() {
-		return getSessionFactory().getCurrentSession().createQuery("from TestSuiteDTO").list();
+	public List<ProjectDTO> getAll() {
+		return getSessionFactory().getCurrentSession().createQuery("from ProjectDTO").list();
 	}
+
 }
