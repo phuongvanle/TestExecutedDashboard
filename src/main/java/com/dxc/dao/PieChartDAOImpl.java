@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -25,8 +26,11 @@ public class PieChartDAOImpl implements PieChartDAO {
 
 
 	@Override
-	public List<PieChartDTO> getAll() {
-		return null;
+	public List<PieChartDTO> getAll(String projectName) {
+		String hql = "from PieChartDTO pie where pie.project in (select id from ProjectDTO p where p.name = :name)";
+		Query query = getSessionFactory().getCurrentSession().createQuery(hql);
+		query.setParameter("name", projectName);
+		return query.list();
 	}
 	@Override
 	public void saveOrUpdate(PieChartDTO pieChartDTO) {

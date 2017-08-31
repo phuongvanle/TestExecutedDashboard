@@ -8,6 +8,6 @@ public interface AreaGraphChartService {
 	
 	public void saveOrUpdate(AreaGraphChartDTO areGraphDTO);
 	
-	public List<AreaGraphChartDTO> getAll();
+	public List<AreaGraphChartDTO> getAll(String projectName);
 
 }

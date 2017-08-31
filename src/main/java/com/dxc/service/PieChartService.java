@@ -9,6 +9,6 @@ public interface PieChartService {
 	
 	public void saveOrUpdate(PieChartDTO pieChartDTO);
 	
-	public List<PieChartDTO> getAll();
+	public List<PieChartDTO> getAll(String projectName);
 
 }

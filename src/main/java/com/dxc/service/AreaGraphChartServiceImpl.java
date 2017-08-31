@@ -27,8 +27,8 @@ public class AreaGraphChartServiceImpl implements AreaGraphChartService {
 	}
 
 	@Override
-	public List<AreaGraphChartDTO> getAll() {
-		return null;
+	public List<AreaGraphChartDTO> getAll(String projectName) {
+		return dao.getAll(projectName);
 	}
 
 }

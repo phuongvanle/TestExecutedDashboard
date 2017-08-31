@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,6 +30,14 @@ public class ProjectDTO implements Serializable {
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	@JsonIgnore
 	private List<TestSuiteDTO> testSuites;
+	
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+	@JsonIgnore
+	private List<AreaGraphChartDTO> listAreaChart;
+	
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+	@JsonIgnore
+	private List<PieChartDTO> listPieChart;
 
 	public int getId() {
 		return id;
@@ -55,4 +62,22 @@ public class ProjectDTO implements Serializable {
 	public void setTestSuites(List<TestSuiteDTO> testSuites) {
 		this.testSuites = testSuites;
 	}
+
+	public List<AreaGraphChartDTO> getListAreaChart() {
+		return listAreaChart;
+	}
+
+	public void setListAreaChart(List<AreaGraphChartDTO> listAreaChart) {
+		this.listAreaChart = listAreaChart;
+	}
+
+	public List<PieChartDTO> getListPieChart() {
+		return listPieChart;
+	}
+
+	public void setListPieChart(List<PieChartDTO> listPieChart) {
+		this.listPieChart = listPieChart;
+	}
+	
+	
 }

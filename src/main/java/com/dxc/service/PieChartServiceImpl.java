@@ -23,8 +23,8 @@ public class PieChartServiceImpl implements PieChartService {
 	}
 
 	@Override
-	public List<PieChartDTO> getAll() {
-		return null;
+	public List<PieChartDTO> getAll(String projectName) {
+		return dao.getAll(projectName);
 	}
 
 	@Override

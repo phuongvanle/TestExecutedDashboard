@@ -8,6 +8,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -184,9 +186,7 @@ public class FitnessUtil {
 	 */
 	public static TestCaseDTO createTestCase(String contextPath, String projectName,String testSuiteName, String date, String testCaseName) {
 		TestCaseDTO testCase = new TestCaseDTO();
-//		testCase.set
 		int status = getTestCaseStatusByDate(contextPath, projectName, testSuiteName, date, testCaseName);
-//		testCase.setId("tc" + date);
 		testCase.setName(testCaseName);
 		testCase.setStatus(status);
 		return testCase;
@@ -245,7 +245,6 @@ public class FitnessUtil {
 			testCase.setName(nameTestCase);
 			testCase.setStatus(status);
 			testCase.setDate(date);
-//			testCase.setTestSuite(createTestSuite(contextPath, projectName, testSuiteName, date, testCases));
 			list.add(testCase);
 		}
 		return list;
@@ -261,9 +260,12 @@ public class FitnessUtil {
 	public static List<TestSuiteDTO> createTestSuiteRunWithDate(String contextPath, String projectName, String testSuiteName) {
 		List<TestSuiteDTO> listTestSuite = new ArrayList<TestSuiteDTO>();
 		List<String> dates = getDateRunTestSuite(contextPath,projectName, testSuiteName);
+		ComparatorWithDate comparator = new ComparatorWithDate();
+		Collections.sort(dates, comparator);
+		List<String> listDateUniqueValid = removeOutOfFourWeek(buildDateInFourWeek(dates.get(dates.size()-1)), dates);
 		List<TestCaseDTO> testCases = null;
 		TestSuiteDTO testSuite = null;
-		for (String date : dates) {
+		for (String date : listDateUniqueValid) {
 			testCases = createListTestCase(contextPath, projectName, date, testSuiteName);
 			testSuite = createTestSuite(contextPath, projectName, testSuiteName, date, testCases);
 			for (TestCaseDTO testCaseDTO : testCases) {
@@ -375,35 +377,31 @@ public class FitnessUtil {
 			}
 		}
 		
+		ComparatorWithDate comparator = new ComparatorWithDate();
+		Collections.sort(listDateUnique, comparator);
+		List<String> listDateUniqueValid = removeOutOfFourWeek(buildDateInFourWeek(listDateUnique.get(listDateUnique.size()-1)), listDateUnique);
 		
-		for (int i = 0; i < listDateUnique.size(); i++) {
+		
+		for (int i = 0; i < listDateUniqueValid.size(); i++) {
 			AreaGraphChartDTO areaChartModelPassed = new AreaGraphChartDTO();
 			AreaGraphChartDTO areaChartModelFailed = new AreaGraphChartDTO();
-			AreaGraphChartDTO areaChartModelError = new AreaGraphChartDTO();
 			int quanlityFailed = 0;
 			int quanlityPassed = 0;
-			int quanlityError = 0;
 			for (List<TestSuiteDTO> listTestSuite : listAll) {
 				for (TestSuiteDTO testSuite : listTestSuite) {
 					for (TestCaseDTO testCase : testSuite.getTestCases()) {
-						if (listDateUnique.get(i).equalsIgnoreCase(testCase.getDate().substring(0, testSuite.getDate().length()-6))) {
+						if (listDateUniqueValid.get(i).equalsIgnoreCase(testCase.getDate().substring(0, testSuite.getDate().length()-6))) {
 							if (TestCaseDTO.Passed == testCase.getStatus()) {
-								areaChartModelPassed.setDate(buildTimeOrder(listDateUnique.get(i)));
+								areaChartModelPassed.setDate(buildTimeOrder(listDateUniqueValid.get(i)));
 								areaChartModelPassed.setStatus("Passed");
 								quanlityPassed++;
 								areaChartModelPassed.setQuanlity(quanlityPassed);
 							}
 							if (TestCaseDTO.Failed == testCase.getStatus()) {
 								quanlityFailed++;
-								areaChartModelFailed.setDate(buildTimeOrder(listDateUnique.get(i)));
+								areaChartModelFailed.setDate(buildTimeOrder(listDateUniqueValid.get(i)));
 								areaChartModelFailed.setStatus("Failed");
 								areaChartModelFailed.setQuanlity(quanlityFailed);
-							}
-							if (TestCaseDTO.Unknown == testCase.getStatus()) {
-								quanlityError++;
-								areaChartModelError.setDate(buildTimeOrder(listDateUnique.get(i)));
-								areaChartModelError.setStatus("Error");
-								areaChartModelError.setQuanlity(quanlityError);
 							}
 						}
 						
@@ -413,7 +411,6 @@ public class FitnessUtil {
 			}
 			listAreaChart.add(areaChartModelPassed);
 			listAreaChart.add(areaChartModelFailed);
-//			listAreaChart.add(areaChartModelError);
 		}
 		return listAreaChart;
 	}
@@ -438,37 +435,53 @@ public class FitnessUtil {
 	
 	
 	public static void main(String[] args) {
-//		String url = "http://localhost:8082/FrontPage.SuitProject001.SuiteIntegrationTesting?pageHistory";
-//		readHtmlFrompPageHistory(url);
-//		getDateRunTestSuite("http://localhost:8083", "SuitProject001");
-//		getTestCaseStatusByDate("http://localhost:8083","SuitProject001", "SuiteIntegrationTesting","20170824215920","TestCaseAbc1");
-//		TestCase testCase = createTestCase("http://localhost:8083", "SuitProject001", "SuiteIntegrationTesting", "20170824215920", "TestCaseAbc1");
-//		System.out.println(testCase);
-//		Properties props = getTestCaseOfTestSuite("http://localhost:8083","SuitProject001","SuiteIntegrationTesting","20170824215920");
-//		Enumeration enumer = props.keys();
-//		while (enumer.hasMoreElements()) {
-//			String key = (String) enumer.nextElement();
-//			System.out.println(key + ":" + props.get(key));
-//			
-//		}
 		String contextPath = "http://localhost:8083";
 		String projectName = "SuitProject001";
 		String testSuiteName = "SuiteIntegrationTesting";
 		List<TestCaseDTO> testCases = null;
-//		TestSuite testSuite = null;
-//		List<TestSuite> listTestSuite = createTestSuiteRunWithDate(contextPath, projectName, testSuiteName);
-//		List<List<TestSuite>> list = createAllTestSuiteRunWithDate(contextPath, projectName);
-//		createAreaGraphData(contextPath, projectName);
-//		for (List<TestSuite> list1 : list) {
-//			for (TestSuite testSuite2 : list1) {
-//				System.out.println(testSuite2);
-//			}
-//		}
 		
 		
 		getProjectNames(contextPath);
 		
 		
 	}
+
+	public static String buildDateInFourWeek(String date) {
+		Calendar recentDate = Calendar.getInstance();
+		int year1 = Integer.parseInt(date.substring(0, 4));
+		int month1 = Integer.parseInt(date.substring(4, 6));
+		int day1 = Integer.parseInt(date.substring(6, 8));
+		recentDate.set(year1, month1-1, day1);
+		recentDate.add(Calendar.WEEK_OF_YEAR, -4);
+		Date res = recentDate.getTime();
+		String format = new SimpleDateFormat("yyyyMMdd").format(res);
+		return format;
+	}
+
+	public static List<String> removeOutOfFourWeek(String date, List<String> list) {
+		int index = 0;
+		ComparatorWithDate comparator = new ComparatorWithDate();
+		if (list.contains(date)) {
+			 index = list.indexOf(date);
+			 for (int i = list.size(); i >= 0; i--) {
+					if (i < index) {
+						list.remove(i);
+					}
+				}
+		} else {
+			list.add(date);
+			Collections.sort(list, comparator);
+			index = list.indexOf(date);
+			for (int i = list.size(); i >= 0; i--) {
+				if (i <= index) {
+					list.remove(i);
+				}
+			}
+		}
+		
+		return list;
+	}
+
+	
 
 }

@@ -16,6 +16,8 @@ import com.dxc.model.PieChartDTO;
 import com.dxc.model.ProjectDTO;
 import com.dxc.model.TestCaseDTO;
 import com.dxc.model.TestSuiteDTO;
+import com.dxc.service.AreaGraphChartService;
+import com.dxc.service.PieChartService;
 import com.dxc.service.ProjectService;
 import com.dxc.service.TestCaseService;
 import com.dxc.service.TestSuiteService;
@@ -30,6 +32,10 @@ public class RestController {
 	TestCaseService testCaseService;
 	@Autowired
 	ProjectService projectService;
+	@Autowired
+	PieChartService pieService;
+	@Autowired
+	AreaGraphChartService areaChartService;
 
 	@CrossOrigin(origins = "http://localhost:8080")
 	@RequestMapping(value = "/showall/{projectName}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
@@ -41,13 +47,13 @@ public class RestController {
 	@CrossOrigin(origins = "http://localhost:8080")
 	@RequestMapping(value = "/pieChartData/{projectName}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
 	public List<PieChartDTO> getDatePieChart(@PathVariable String projectName) {
-		return FitnessUtil.createPieChartData("http://localhost:8083", projectName);
+		return pieService.getAll(projectName);
 	}
 
 	@CrossOrigin(origins = "http://localhost:8080")
 	@RequestMapping(value = "/areaChartData/{projectName}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
 	public List<AreaGraphChartDTO> getAreaGraphChartData(@PathVariable String projectName) {
-		return FitnessUtil.createAreaGraphData("http://localhost:8083", projectName);
+		return  areaChartService.getAll(projectName);
 	}
 
 	@RequestMapping(value = "/areaChartDatabase/{projectName}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
