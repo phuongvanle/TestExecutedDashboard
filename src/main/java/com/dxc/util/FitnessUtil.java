@@ -389,10 +389,6 @@ public class FitnessUtil {
 //				System.out.println(testSuite2);
 //			}
 //		}
-		
-		System.out.println(buildTimeOrder("20171010"));
-		
-		
 	}
 
 }
