@@ -35,9 +35,16 @@ public class TestCaseDAOImpl implements TestCaseDAO {
 	}
 
 	@Override
-	public List<TestCaseDTO> getDataFourWeek() {
-		String hql = "SELECT RunDate, TestCaseStatus FROM testcase WHERE RunDate BETWEEN DATE_SUB(current_date(), INTERVAL 28 DAY) AND current_date()";
+	public List<TestCaseDTO> getDataFourWeek(String projectName) {
+		String hql = "SELECT count(tc.id), tc.TestCaseStatus from testcase tc where tc.RunDate BETWEEN DATE_SUB(current_date(), INTERVAL 28 DAY) AND current_date() GROUP BY tc.TestCaseStatus";
+//		String sql = "SELECT RunDate, TestCaseStatus FROM testcase WHERE RunDate BETWEEN DATE_SUB(current_date(), INTERVAL 28 DAY) AND current_date()";
 		return getSessionFactory().getCurrentSession().createSQLQuery(hql).list();
+	}
+
+	@Override
+	public List<TestCaseDTO> getTestCaseOfProject(String idProject) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -23,6 +23,6 @@ public interface TestCaseService {
 	 * 
 	 */
 	
-	public List<TestCaseDTO> getTestCaseFourWeek();
+	public List<TestCaseDTO> getTestCaseFourWeek(String projectName);
 
 }

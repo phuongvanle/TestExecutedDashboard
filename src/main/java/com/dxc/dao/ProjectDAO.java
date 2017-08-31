@@ -9,5 +9,8 @@ public interface ProjectDAO {
 	public void saveOrUpdate(ProjectDTO project);
 	
 	public List<ProjectDTO> getAll();
+	
+	public ProjectDTO getProject(String name);
+	
 
 }

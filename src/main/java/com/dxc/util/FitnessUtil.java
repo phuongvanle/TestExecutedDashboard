@@ -18,18 +18,28 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 
-import com.dxc.model.AreaGraphChartModel;
-import com.dxc.model.PieChartModel;
+import com.dxc.model.AreaGraphChartDTO;
+import com.dxc.model.PieChartDTO;
 import com.dxc.model.ProjectDTO;
 import com.dxc.model.TestCaseDTO;
 import com.dxc.model.TestSuiteDTO;
+import com.dxc.service.AreaGraphChartService;
+import com.dxc.service.PieChartService;
 
 /**
  * @author phuongit
  *
  */
+
 public class FitnessUtil {
+	
+	@Autowired
+	static PieChartService pieChartService;
+	@Autowired
+	static AreaGraphChartService areaGraphChartService;
 	
 	public static final long CONTANT_ONE_DAY = 24*60*60*1000;
 	
@@ -313,9 +323,9 @@ public class FitnessUtil {
 	 * @param projectName
 	 * @return list piechartmodel
 	 */
-	public static List<PieChartModel> createPieChartData(String contextPath, String projectName) {
+	public static List<PieChartDTO> createPieChartData(String contextPath, String projectName) {
 		List<List<TestSuiteDTO>> list = createAllTestSuiteRunWithDate(contextPath, projectName);
-		List<PieChartModel> listPieChart = new ArrayList<>();
+		List<PieChartDTO> listPieChart = new ArrayList<>();
 		int pass = 0;
 		int fail = 0;
 		int error = 0;
@@ -334,13 +344,13 @@ public class FitnessUtil {
 				}
 			}
 		}
-		PieChartModel data1 = new PieChartModel();
+		PieChartDTO data1 = new PieChartDTO();
 		data1.setStatus("Passed");
 		data1.setQuantity(pass);
-		PieChartModel data2 = new PieChartModel();
+		PieChartDTO data2 = new PieChartDTO();
 		data2.setStatus("Failed");
 		data2.setQuantity(fail);
-		PieChartModel data3 = new PieChartModel();
+		PieChartDTO data3 = new PieChartDTO();
 		data3.setStatus("Error");
 		data3.setQuantity(error);
 		listPieChart.add(data1);
@@ -350,9 +360,11 @@ public class FitnessUtil {
 	}
 	
 	
-	public static List<AreaGraphChartModel> createAreaGraphData(String contextPath, String projectName) {
+	
+	
+	public static List<AreaGraphChartDTO> createAreaGraphData(String contextPath, String projectName) {
 		List<List<TestSuiteDTO>> listAll = createAllTestSuiteRunWithDate(contextPath, projectName);
-		List<AreaGraphChartModel> listAreaChart = new ArrayList<>();
+		List<AreaGraphChartDTO> listAreaChart = new ArrayList<>();
 		List<TestSuiteDTO> listTSuiteByDate = new ArrayList<>();
 		List<String> listDateUnique = new ArrayList<>();
 		for (List<TestSuiteDTO> listTestSuite : listAll) {
@@ -365,9 +377,9 @@ public class FitnessUtil {
 		
 		
 		for (int i = 0; i < listDateUnique.size(); i++) {
-			AreaGraphChartModel areaChartModelPassed = new AreaGraphChartModel();
-			AreaGraphChartModel areaChartModelFailed = new AreaGraphChartModel();
-			AreaGraphChartModel areaChartModelError = new AreaGraphChartModel();
+			AreaGraphChartDTO areaChartModelPassed = new AreaGraphChartDTO();
+			AreaGraphChartDTO areaChartModelFailed = new AreaGraphChartDTO();
+			AreaGraphChartDTO areaChartModelError = new AreaGraphChartDTO();
 			int quanlityFailed = 0;
 			int quanlityPassed = 0;
 			int quanlityError = 0;
@@ -405,6 +417,14 @@ public class FitnessUtil {
 		}
 		return listAreaChart;
 	}
+	
+	
+	/**
+	 * this method automatic update data to database
+	 * @param days
+	 * @return
+	 */
+	
 	
 	public static Date buildTimeOrder(String days){
 		Date date = null;

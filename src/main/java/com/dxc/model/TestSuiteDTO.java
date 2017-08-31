@@ -38,11 +38,11 @@ public class TestSuiteDTO implements Serializable {
 	@Column(name = "TestSuiteName")
 	private String name;
 	
-	@OneToMany(mappedBy = "testSuite", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "testSuite", cascade = CascadeType.ALL)
 	@JsonIgnore
 	List<TestCaseDTO> testCases;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "projectid", nullable = false)
 	@JsonIgnore
 	private ProjectDTO project;

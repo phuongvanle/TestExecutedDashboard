@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.dxc.dao.TestSuiteDAO;
-import com.dxc.model.AreaGraphChartModel;
-import com.dxc.model.PieChartModel;
+import com.dxc.model.AreaGraphChartDTO;
+import com.dxc.model.PieChartDTO;
 import com.dxc.model.ProjectDTO;
 import com.dxc.model.TestCaseDTO;
 import com.dxc.model.TestSuiteDTO;
@@ -40,21 +40,21 @@ public class RestController {
 
 	@CrossOrigin(origins = "http://localhost:8080")
 	@RequestMapping(value = "/pieChartData/{projectName}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-	public List<PieChartModel> getDatePieChart(@PathVariable String projectName) {
+	public List<PieChartDTO> getDatePieChart(@PathVariable String projectName) {
 		return FitnessUtil.createPieChartData("http://localhost:8083", projectName);
 	}
 
 	@CrossOrigin(origins = "http://localhost:8080")
 	@RequestMapping(value = "/areaChartData/{projectName}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-	public List<AreaGraphChartModel> getAreaGraphChartData(@PathVariable String projectName) {
+	public List<AreaGraphChartDTO> getAreaGraphChartData(@PathVariable String projectName) {
 		return FitnessUtil.createAreaGraphData("http://localhost:8083", projectName);
 	}
 
 	@RequestMapping(value = "/areaChartDatabase/{projectName}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-	public List<AreaGraphChartModel> getAreaGraphFromDatabase(@PathVariable String projectName) {
-		List<AreaGraphChartModel> list = new ArrayList<>();
+	public List<AreaGraphChartDTO> getAreaGraphFromDatabase(@PathVariable String projectName) {
+		List<AreaGraphChartDTO> list = new ArrayList<>();
 		for (int i = 0; i < 10; i++) {
-			AreaGraphChartModel are = new AreaGraphChartModel();
+			AreaGraphChartDTO are = new AreaGraphChartDTO();
 			are.setDate(new Date());
 			are.setQuanlity(10);
 			are.setStatus("Failed");
@@ -90,10 +90,20 @@ public class RestController {
 			}
 		}
 	}
-
-	@RequestMapping(value = "/showTestCase/{projectName}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-	public List<TestCaseDTO> showTestSuite(@PathVariable String projectName) {
-		return testCaseService.getTestCaseFourWeek();
+	@CrossOrigin(origins = "http://localhost:8080")
+	@RequestMapping(value = "/pieChartDataTest/{projectName}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
+	public List<PieChartDTO> showTestSuite(@PathVariable String projectName) {
+		List<PieChartDTO> result = new ArrayList<>();
+		for (Object object : testCaseService.getTestCaseFourWeek(projectName)) {
+			Object[] o = (Object[]) object;
+			int quanlity = Integer.parseInt(String.valueOf(o[0]));
+			String status = String.valueOf(o[1]);
+			PieChartDTO pie = new PieChartDTO();
+			pie.setStatus(status);
+			pie.setQuantity(quanlity);
+			result.add(pie);
+		}
+		return result;
 	}
 
 }

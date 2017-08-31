@@ -33,7 +33,7 @@ public class TestCaseServiceImpl implements TestCaseService {
 	}
 
 	@Override
-	public List<TestCaseDTO> getTestCaseFourWeek() {
-		return testCaseDao.getDataFourWeek();
+	public List<TestCaseDTO> getTestCaseFourWeek(String projectName) {
+		return testCaseDao.getDataFourWeek(projectName);
 	}
 }

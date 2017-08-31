@@ -2,6 +2,7 @@ package com.dxc.dao;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -32,4 +33,11 @@ public class ProjectDAOImpl implements ProjectDAO {
 		return getSessionFactory().getCurrentSession().createQuery("from ProjectDTO").list();
 	}
 
+	@Override
+	public ProjectDTO getProject(String name) {
+		String hql = "SELECT * FROM projects WHERE ProjetName = :name";
+		Query query = getSessionFactory().getCurrentSession().createQuery(hql);
+		query.setString("name", name);
+		return (ProjectDTO) query.list();
+	}
 }

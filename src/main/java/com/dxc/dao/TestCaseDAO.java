@@ -22,7 +22,9 @@ public interface TestCaseDAO {
 	 * 
 	 */
 	
-	public List<TestCaseDTO> getDataFourWeek();
+	public List<TestCaseDTO> getDataFourWeek(String projectName);
 	
+	
+	public List<TestCaseDTO> getTestCaseOfProject(String idProject);
 	
 }

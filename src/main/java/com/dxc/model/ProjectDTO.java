@@ -28,7 +28,7 @@ public class ProjectDTO implements Serializable {
 	@Column(name = "ProjectName", unique = true)
 	private String name;
 	
-	@OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	@JsonIgnore
 	private List<TestSuiteDTO> testSuites;
 
