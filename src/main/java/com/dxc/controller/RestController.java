@@ -37,79 +37,26 @@ public class RestController {
 	@Autowired
 	AreaGraphChartService areaChartService;
 
-	@CrossOrigin(origins = "http://localhost:8080")
+	@CrossOrigin
 	@RequestMapping(value = "/showall/{projectName}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
 	public List<List<TestSuiteDTO>> showAllTestSuite(@PathVariable String projectName) {
 		String contextPath = "http://localhost:8083";
 		return FitnessUtil.createAllTestSuiteRunWithDate(contextPath, projectName);
 	}
 
-	@CrossOrigin(origins = "http://localhost:8080")
+	@CrossOrigin
 	@RequestMapping(value = "/pieChartData/{projectName}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
 	public List<PieChartDTO> getDatePieChart(@PathVariable String projectName) {
 		return pieService.getAll(projectName);
 	}
 
-	@CrossOrigin(origins = "http://localhost:8080")
+	@CrossOrigin
 	@RequestMapping(value = "/areaChartData/{projectName}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
 	public List<AreaGraphChartDTO> getAreaGraphChartData(@PathVariable String projectName) {
 		return  areaChartService.getAll(projectName);
 	}
 
-	@RequestMapping(value = "/areaChartDatabase/{projectName}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-	public List<AreaGraphChartDTO> getAreaGraphFromDatabase(@PathVariable String projectName) {
-		List<AreaGraphChartDTO> list = new ArrayList<>();
-		for (int i = 0; i < 10; i++) {
-			AreaGraphChartDTO are = new AreaGraphChartDTO();
-			are.setDate(new Date());
-			are.setQuanlity(10);
-			are.setStatus("Failed");
-			list.add(are);
-		}
-		return list;
-	}
 
-	@RequestMapping("/createTestSuite/{projectName}")
-	public void index(@PathVariable String projectName) {
-		List<List<TestSuiteDTO>> listTestSuite = FitnessUtil.createAllTestSuiteRunWithDate("http://localhost:8083",
-				projectName);
-		for (List<TestSuiteDTO> list : listTestSuite) {
-			for (TestSuiteDTO testSuiteDTO : list) {
-				testSuiteService.saveOrUpdate(testSuiteDTO);
-				for (TestCaseDTO testCase : testSuiteDTO.getTestCases()) {
-					testCaseService.saveOrUpdate(testCase);
-				}
-			}
-		}
-	}
 
-	@RequestMapping("/createData")
-	public void createData() {
-		List<ProjectDTO> projects = FitnessUtil.createProjects("http://localhost:8083");
-		for (ProjectDTO projectDTO : projects) {
-			projectService.saveOrUpdate(projectDTO);
-			for (TestSuiteDTO testSuiteDTO : projectDTO.getTestSuites()) {
-				testSuiteService.saveOrUpdate(testSuiteDTO);
-				for (TestCaseDTO testCase : testSuiteDTO.getTestCases()) {
-					testCaseService.saveOrUpdate(testCase);
-				}
-			}
-		}
-	}
-	@CrossOrigin(origins = "http://localhost:8080")
-	@RequestMapping(value = "/pieChartDataTest/{projectName}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-	public List<PieChartDTO> showTestSuite(@PathVariable String projectName) {
-		List<PieChartDTO> result = new ArrayList<>();
-		for (Object object : testCaseService.getTestCaseFourWeek(projectName)) {
-			Object[] o = (Object[]) object;
-			int quanlity = Integer.parseInt(String.valueOf(o[0]));
-			String status = String.valueOf(o[1]);
-			PieChartDTO pie = new PieChartDTO();
-			pie.setStatus(status);
-			pie.setQuantity(quanlity);
-			result.add(pie);
-		}
-		return result;
-	}
 
 }

@@ -32,4 +32,9 @@ public class ProjectServiceImpl implements ProjectService {
 		return p.getAll();
 	}
 
+	@Override
+	public void deleteAll() {
+		p.deleteAll();
+	}
+
 }

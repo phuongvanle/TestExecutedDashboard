@@ -30,46 +30,52 @@ public class AreaGraphChartDTO implements Serializable {
 	private Date date;
 	@Column(name = "STATUS")
 	private String status;
-	@Column(name ="QUANLITY")
-	private int quanlity;
+	@Column(name = "QUANTITY")
+	private int quantity;
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "project_id", nullable = false)
 	@JsonIgnore
 	private ProjectDTO project;
-	
+
 	public Date getDate() {
 		return date;
 	}
+
 	public void setDate(Date date) {
 		this.date = date;
 	}
+
 	public String getStatus() {
 		return status;
 	}
+
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public int getQuanlity() {
-		return quanlity;
-	}
-	public void setQuanlity(int quanlity) {
-		this.quanlity = quanlity;
-	}
+
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public ProjectDTO getProject() {
 		return project;
 	}
+
 	public void setProject(ProjectDTO project) {
 		this.project = project;
 	}
-	
-	
-	
-	
 
 }

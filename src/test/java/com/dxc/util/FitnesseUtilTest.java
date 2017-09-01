@@ -49,7 +49,7 @@ public class FitnesseUtilTest {
 	
 	@Test
 	public void test1() {
-		assertEquals("20170803", FitnessUtil.buildDateInFourWeek("20170831"));
+		assertEquals("20170803", FitnessUtil.buildDateInFourWeek("20170830"));
 	}
 	
 	@Test

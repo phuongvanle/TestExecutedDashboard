@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,7 +26,8 @@ import com.dxc.util.FitnessUtil;
 @Component
 @EnableScheduling
 public class AppConfig {
-	
+	@Value("${fitnesse.url}")
+	private String url;
 	@Autowired
 	PieChartService pieChartService;
 	@Autowired
@@ -32,11 +35,21 @@ public class AppConfig {
 	@Autowired
 	ProjectService projectService;
 	
-	@Scheduled(fixedDelay = 60000*10)
-	public void updateDataToDatabase() {
-		updateFromFitnesse("http://localhost:8083");
+	
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 	
+	@Scheduled(fixedDelay = 60000 * 10)
+	public void updateDataToDatabase() {
+		projectService.deleteAll();
+		updateFromFitnesse(getUrl());
+	}
+
 	public void updateFromFitnesse(String url) {
 		List<String> names = FitnessUtil.getProjectNames(url);
 		List<AreaGraphChartDTO> listArea = null;
@@ -49,7 +62,7 @@ public class AppConfig {
 		for (ProjectDTO projectDTO : listProject) {
 			listArea = FitnessUtil.createAreaGraphData(url, projectDTO.getName());
 			listPie = FitnessUtil.createPieChartData(url, projectDTO.getName());
-			
+
 			for (AreaGraphChartDTO areaGraph : listArea) {
 				areaGraph.setProject(projectDTO);
 				areaChartService.saveOrUpdate(areaGraph);
@@ -63,6 +76,5 @@ public class AppConfig {
 			projectService.saveOrUpdate(projectDTO);
 		}
 	}
-	
-	
+
 }

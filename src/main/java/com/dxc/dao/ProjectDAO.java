@@ -12,5 +12,7 @@ public interface ProjectDAO {
 	
 	public ProjectDTO getProject(String name);
 	
+	public void deleteAll();
+	
 
 }

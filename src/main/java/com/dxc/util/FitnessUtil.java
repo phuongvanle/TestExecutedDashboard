@@ -395,13 +395,13 @@ public class FitnessUtil {
 								areaChartModelPassed.setDate(buildTimeOrder(listDateUniqueValid.get(i)));
 								areaChartModelPassed.setStatus("Passed");
 								quanlityPassed++;
-								areaChartModelPassed.setQuanlity(quanlityPassed);
+								areaChartModelPassed.setQuantity(quanlityPassed);
 							}
 							if (TestCaseDTO.Failed == testCase.getStatus()) {
 								quanlityFailed++;
 								areaChartModelFailed.setDate(buildTimeOrder(listDateUniqueValid.get(i)));
 								areaChartModelFailed.setStatus("Failed");
-								areaChartModelFailed.setQuanlity(quanlityFailed);
+								areaChartModelFailed.setQuantity(quanlityFailed);
 							}
 						}
 						

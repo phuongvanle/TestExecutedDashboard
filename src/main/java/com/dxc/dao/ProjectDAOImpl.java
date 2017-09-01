@@ -40,4 +40,10 @@ public class ProjectDAOImpl implements ProjectDAO {
 		query.setString("name", name);
 		return (ProjectDTO) query.list();
 	}
+
+	@Override
+	public void deleteAll() {
+		String hql = "DELETE FROM ProjectDTO";
+		Query query = getSessionFactory().getCurrentSession().createQuery(hql);
+	}
 }
